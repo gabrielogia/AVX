@@ -4,6 +4,37 @@ maskWithOperation::maskWithOperation() {
 
 }
 
+void maskWithOperation::trigSTDu(const std::vector<int>& evenOrOdd, std::vector<data>& dataVec, int i) {
+
+	if (evenOrOdd[i] == 0) {
+		dataVec[i].C[0] = std::tan(std::sin(*dataVec[i].A[0]));
+	}
+
+	else {
+		dataVec[i].C[0] = std::tan(std::cos(*dataVec[i].A[0]));
+	}
+}
+
+void maskWithOperation::oddOrEvenSTDu(std::vector<int>& evenOrOdd, std::vector<data>& dataVec, int i) {
+
+	evenOrOdd[i] = (*dataVec[i].A[0] % 2) == 0;
+}
+
+void maskWithOperation::setOperationSTDu(const std::vector<int>& x, std::vector<data>& dataVec) {
+	std::vector<int> evenOrOdd(x.size());
+
+	for (auto i = 0; i < x.size(); i++)
+	{
+		oddOrEvenSTDu(evenOrOdd, dataVec, i);
+		trigSTDu(evenOrOdd, dataVec, i);
+		//sumDivideTimesSTD(result, i);
+		//std::cout << "Resultado STDu " << i << " = " << dataVec[i].C[0] << std::endl;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 void maskWithOperation::trigAVX(std::vector<double>& result, __m256d& vec, __m256i& maskCos, __m256i& maskSin, int i) {
 
 	_mm256_maskstore_pd(result.data() + i, maskCos, _mm256_tan_pd(_mm256_cos_pd(vec)));
@@ -84,7 +115,6 @@ void maskWithOperation::oddOrEvenSTD(const std::vector<int>& x, std::vector<int>
 
 void maskWithOperation::setOperationSTD(const std::vector<int>& x, std::vector<double>& result) {
 	std::vector<int> evenOrOdd(x.size());
-	std::chrono::time_point<std::chrono::system_clock> start, end;
 
 	for (auto i = 0; i < x.size(); i++)
 	{
@@ -97,7 +127,7 @@ void maskWithOperation::setOperationSTD(const std::vector<int>& x, std::vector<d
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void maskWithOperation::start(const std::vector<int>& x, std::vector<double>& resultTsimd, std::vector<double>& resultSTD, std::vector<double>& resultAVX) {
+void maskWithOperation::start(const std::vector<int>& x, std::vector<double>& resultTsimd, std::vector<double>& resultSTD, std::vector<double>& resultAVX, std::vector<data>& dataVec) {
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	std::chrono::duration<double>elapsed_seconds;
 
@@ -115,10 +145,16 @@ void maskWithOperation::start(const std::vector<int>& x, std::vector<double>& re
 	std::cout << "Set Operation STD: " << elapsed_seconds.count() << std::endl;
 
 	start = std::chrono::system_clock::now();
-	maskWithOperation::setOperationAVX(x, resultTsimd);
+	maskWithOperation::setOperationAVX(x, resultAVX);
 	end = std::chrono::system_clock::now();
 	elapsed_seconds = end - start;
 	std::cout << "Set Operation AVX: " << elapsed_seconds.count() << std::endl;
+
+	start = std::chrono::system_clock::now();
+	maskWithOperation::setOperationSTDu(x, dataVec);
+	end = std::chrono::system_clock::now();
+	elapsed_seconds = end - start;
+	std::cout << "Set Operation STDu: " << elapsed_seconds.count() << std::endl;
 
 }
 

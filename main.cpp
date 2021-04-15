@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
 			}
 
 			std::cout << std::endl << "Execution " << j+1 << " with " << N[i] << " points:" << std::endl;
-			maskWithOperation::start(x, resultTsimd, resultSTD, resultAVX);
+			maskWithOperation::start(x, resultTsimd, resultSTD, resultAVX, dataVec);
 
 			dataVec.clear();
 			x.clear();

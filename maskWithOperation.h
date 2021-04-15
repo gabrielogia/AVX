@@ -11,7 +11,7 @@ class maskWithOperation
 		maskWithOperation();
 		~maskWithOperation();
 
-		static void start(const std::vector<int>& x, std::vector<double>& resultTsimd, std::vector<double>& resultSTD, std::vector<double>& resultAVX);
+		static void start(const std::vector<int>& x, std::vector<double>& resultTsimd, std::vector<double>& resultSTD, std::vector<double>& resultAVX, std::vector<data>& dataVec);
 
 		static void testOperations();
 		static void testLoadStore(std::vector<int> &x, std::vector<int> &y);
@@ -30,5 +30,9 @@ class maskWithOperation
 		static void oddorEvenAVX(const std::vector<int>& x, __m256d& vec, __m256i& maskCos, __m256i& maskSin, int i);
 		static void trigAVX(std::vector<double>& result, __m256d& vec, __m256i& maskCos, __m256i& maskSin, int i);
 		static void sumDivideTimesAVX(std::vector<double>& result, __m256d& resultCos, __m256d& resultSin, __m256i& maskCos, __m256i& maskSin, int i);
+
+		static void setOperationSTDu(const std::vector<int>& x, std::vector<data>& dataVec);
+		static void oddOrEvenSTDu(std::vector<int>& evenOrOdd, std::vector<data>& dataVec, int i);
+		static void trigSTDu(const std::vector<int>& evenOrOdd, std::vector<data>& dataVec, int i);
 };
 
